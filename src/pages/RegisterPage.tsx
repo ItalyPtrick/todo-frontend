@@ -8,7 +8,6 @@ import { Label } from '../components/ui/label';
 import { Button } from '../components/ui/button';
 import { fadeUp, staggerContainer } from '../lib/animations';
 import apiClient from '../services/api-client';
-import { AuthLayout } from '../layouts/AuthLayout';
 
 export function RegisterPage() {
   const navigate = useNavigate();
