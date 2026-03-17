@@ -18,16 +18,20 @@ import {
   SheetFooter,
 } from '../components/ui/sheet';
 import { Label } from '../components/ui/label';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ListTodo, CheckCircle, Circle } from 'lucide-react';
-import { Card, CardContent } from '../components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { Calendar } from '../components/ui/calendar';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { TodoList } from '../features/todos/components/TodoList';
+import { TodoStats } from '../features/todos/components/TodoStats';
 import { createTodo, updateTodo, getTodos } from '../features/todos/api';
 import type { Todo, CreateTodoInput, UpdateTodoInput } from '../features/todos/types';
+
+interface Stats {
+  total: number;
+  completed: number;
+  uncompleted: number;
+}
 
 export function TodosPage() {
   // Todos 状态
@@ -50,6 +54,13 @@ export function TodosPage() {
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('created_at');
   const [sortOrder, setSortOrder] = useState<string>('desc');
+
+  // 本地计算统计数据
+  const stats: Stats = {
+    total: todos.length,
+    completed: todos.filter(t => t.completed).length,
+    uncompleted: todos.filter(t => !t.completed).length,
+  };
 
   // 搜索防抖
   useEffect(() => {
@@ -81,13 +92,6 @@ export function TodosPage() {
   useEffect(() => {
     fetchTodos();
   }, [fetchTodos]);
-
-  // 计算统计数据（本地计算，立即更新）
-  const stats = {
-    total: todos.length,
-    completed: todos.filter(t => t.completed).length,
-    uncompleted: todos.filter(t => !t.completed).length,
-  };
 
   // 打开新建 Sheet
   const handleOpenCreate = () => {
@@ -144,9 +148,9 @@ export function TodosPage() {
     }
   };
 
-  // 更新单个任务状态（本地乐观更新）
+  // 更新单个任务状态（本地乐观更新，立即反映到统计）
   const handleUpdateTodoStatus = async (todoId: string, completed: boolean) => {
-    // 立即本地更新
+    // 立即本地更新 - 包括 todos 和 stats 都会立即变化
     setTodos(prev => prev.map(t =>
       t.id === todoId ? { ...t, completed } : t
     ));
@@ -180,12 +184,6 @@ export function TodosPage() {
     fetchTodos();
   };
 
-  const statItems = [
-    { title: '总任务', value: stats.total, icon: ListTodo, color: 'text-foreground' },
-    { title: '已完成', value: stats.completed, icon: CheckCircle, color: 'text-accent' },
-    { title: '未完成', value: stats.uncompleted, icon: Circle, color: 'text-[#FF6B4A]' },
-  ];
-
   return (
     <div className="p-8">
       {/* 顶部栏 */}
@@ -197,37 +195,9 @@ export function TodosPage() {
         </Button>
       </div>
 
-      {/* 统计卡片 - 带动画 */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        {statItems.map((item, index) => (
-          <motion.div
-            key={item.title}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <Card className="bg-card border border-border">
-              <CardContent className="p-4 flex items-center gap-4">
-                <item.icon className="w-8 h-8 text-muted-foreground" />
-                <div>
-                  <p className="text-sm text-muted-foreground">{item.title}</p>
-                  <AnimatePresence mode="popLayout">
-                    <motion.p
-                      key={item.value}
-                      initial={{ scale: 1.2, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.8, opacity: 0 }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      className={`text-3xl font-bold ${item.color}`}
-                    >
-                      {item.value}
-                    </motion.p>
-                  </AnimatePresence>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
+      {/* 统计卡片 - 传入本地计算的 stats */}
+      <div className="mb-8">
+        <TodoStats stats={stats} />
       </div>
 
       {/* 工具栏 */}

@@ -1,75 +1,53 @@
-import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ListTodo, CheckCircle, Circle } from 'lucide-react';
 import { Card, CardContent } from '../../../components/ui/card';
-import { Skeleton } from '../../../components/ui/skeleton';
 import { fadeUp, staggerContainer } from '../../../lib/animations';
-import apiClient from '../../../services/api-client';
 
-interface TodoStatsData {
+interface Stats {
   total: number;
   completed: number;
   uncompleted: number;
 }
 
 interface TodoStatsProps {
-  refreshTrigger?: number;
+  stats: Stats;
 }
 
-export function TodoStats({ refreshTrigger = 0 }: TodoStatsProps) {
-  const [stats, setStats] = useState<TodoStatsData | null>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const isFirstLoad = useRef(true);
+// 数字动画组件
+function AnimatedNumber({ value, color }: { value: number; color: string }) {
+  return (
+    <motion.span
+      key={value}
+      initial={{ opacity: 0.5, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{
+        duration: 0.2,
+        ease: 'easeOut',
+      }}
+      className={`text-3xl font-bold ${color}`}
+    >
+      {value}
+    </motion.span>
+  );
+}
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      // 只有首次加载才显示 loading
-      if (isFirstLoad.current) {
-        setInitialLoading(true);
-      }
-      try {
-        const response = await apiClient.get('/todos/stats');
-        setStats(response.data);
-      } catch (error) {
-        console.error('Failed to fetch stats:', error);
-      } finally {
-        if (isFirstLoad.current) {
-          setInitialLoading(false);
-          isFirstLoad.current = false;
-        }
-      }
-    };
-
-    fetchStats();
-  }, [refreshTrigger]);
-
-  // 首次加载显示 Skeleton
-  if (initialLoading) {
-    return (
-      <div className="grid grid-cols-3 gap-4">
-        <Skeleton className="h-24" />
-        <Skeleton className="h-24" />
-        <Skeleton className="h-24" />
-      </div>
-    );
-  }
-
+export function TodoStats({ stats }: TodoStatsProps) {
   const statItems = [
     {
       title: '总任务',
-      value: stats?.total || 0,
+      value: stats.total,
       icon: ListTodo,
       color: 'text-foreground',
     },
     {
       title: '已完成',
-      value: stats?.completed || 0,
+      value: stats.completed,
       icon: CheckCircle,
       color: 'text-accent',
     },
     {
       title: '未完成',
-      value: stats?.uncompleted || 0,
+      value: stats.uncompleted,
       icon: Circle,
       color: 'text-[#FF6B4A]',
     },
@@ -89,9 +67,7 @@ export function TodoStats({ refreshTrigger = 0 }: TodoStatsProps) {
               <item.icon className="w-8 h-8 text-muted-foreground" />
               <div>
                 <p className="text-sm text-muted-foreground">{item.title}</p>
-                <p className={`text-3xl font-bold ${item.color}`}>
-                  {item.value}
-                </p>
+                <AnimatedNumber value={item.value} color={item.color} />
               </div>
             </CardContent>
           </Card>
