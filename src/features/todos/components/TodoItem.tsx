@@ -18,7 +18,7 @@ interface TodoItemProps {
   onRefresh: () => void;
 }
 
-export function TodoItem({ todo, onEdit, onUpdateStatus, onDelete, onRefresh }: TodoItemProps) {
+export function TodoItem({ todo, onEdit, onUpdateStatus, onDelete }: TodoItemProps) {
   const handleToggleComplete = () => {
     onUpdateStatus(todo.id, !todo.completed);
   };
