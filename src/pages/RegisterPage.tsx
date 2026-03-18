@@ -63,7 +63,7 @@ export function RegisterPage() {
 
   return (
     <motion.div
-      className="w-full max-w-md"
+      className="w-full max-w-lg"
       variants={fadeUp}
       initial="initial"
       animate="animate"
