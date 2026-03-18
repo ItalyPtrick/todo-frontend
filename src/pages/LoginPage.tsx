@@ -62,12 +62,12 @@ export function LoginPage() {
 
   return (
     <motion.div
-      className="w-full max-w-lg"
+      className="w-[480px]"
       variants={fadeUp}
       initial="initial"
       animate="animate"
     >
-      <Card>
+      <Card className="w-full">
         <CardHeader className="space-y-4">
           {/* Logo 区域 */}
           <div className="flex items-center justify-center gap-3">
