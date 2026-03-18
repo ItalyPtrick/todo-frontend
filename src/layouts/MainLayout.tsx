@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { clearToken } from '../services/token-manager';
@@ -7,11 +8,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
+import { Button } from '../components/ui/button';
 
 export function MainLayout() {
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // 从 JWT token 解析用户名
   const token = localStorage.getItem('auth_token');
   const username = token
     ? JSON.parse(atob(token.split('.')[1])).sub
@@ -26,9 +28,20 @@ export function MainLayout() {
 
   return (
     <div className="flex h-screen">
-      {/* 左侧固定侧边栏 */}
-      <aside className="w-64 bg-card border-r border-border flex flex-col">
-        {/* 顶部 Logo 区域 */}
+      <div
+        className={cn(
+          'fixed inset-0 bg-black/50 z-40 lg:hidden',
+          sidebarOpen ? 'block' : 'hidden'
+        )}
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      <aside
+        className={cn(
+          'fixed lg:static inset-y-0 left-0 z-50 w-64 bg-card border-r border-border flex flex-col transition-transform duration-300 lg:translate-x-0',
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
         <div className="h-16 flex items-center px-4 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
@@ -50,10 +63,10 @@ export function MainLayout() {
           </div>
         </div>
 
-        {/* 导航区域 */}
         <nav className="flex-1 p-4">
           <Link
             to="/todos"
+            onClick={() => setSidebarOpen(false)}
             className={cn(
               'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
               isActive('/todos')
@@ -78,7 +91,6 @@ export function MainLayout() {
           </Link>
         </nav>
 
-        {/* 底部用户区域 */}
         <div className="p-4 border-t border-border">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -123,8 +135,29 @@ export function MainLayout() {
         </div>
       </aside>
 
-      {/* 右侧主内容区 */}
       <main className="flex-1 bg-background overflow-y-auto">
+        <div className="h-16 flex items-center px-4 border-b border-border lg:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </Button>
+          <div className="ml-3 font-semibold">任务清单</div>
+        </div>
         <Outlet />
       </main>
     </div>

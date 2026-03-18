@@ -185,11 +185,11 @@ export function TodosPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       {/* 顶部栏 */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">我的任务</h1>
-        <Button onClick={handleOpenCreate}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold hidden sm:block">我的任务</h1>
+        <Button onClick={handleOpenCreate} className="w-full sm:w-auto">
           <Plus className="w-4 h-4 mr-2" />
           新建任务
         </Button>
@@ -201,53 +201,56 @@ export function TodosPage() {
       </div>
 
       {/* 工具栏 */}
-      <div className="flex flex-wrap gap-3 my-4">
+      <div className="flex flex-col sm:flex-row gap-3 my-4">
         {/* 搜索框 */}
-        <div className="relative">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="搜索任务..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-64 pl-9"
+            className="w-full pl-9"
           />
         </div>
 
-        {/* 优先级筛选 */}
-        <Select value={filterPriority} onValueChange={setFilterPriority}>
-          <SelectTrigger className="w-36">
-            <SelectValue placeholder="全部优先级" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">全部优先级</SelectItem>
-            <SelectItem value="3">高</SelectItem>
-            <SelectItem value="2">中</SelectItem>
-            <SelectItem value="1">低</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* 筛选器容器 */}
+        <div className="flex flex-wrap gap-2">
+          {/* 优先级筛选 */}
+          <Select value={filterPriority} onValueChange={setFilterPriority}>
+            <SelectTrigger className="w-full sm:w-36">
+              <SelectValue placeholder="全部优先级" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部优先级</SelectItem>
+              <SelectItem value="3">高</SelectItem>
+              <SelectItem value="2">中</SelectItem>
+              <SelectItem value="1">低</SelectItem>
+            </SelectContent>
+          </Select>
 
-        {/* 排序 */}
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder="排序方式" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="created_at">创建时间</SelectItem>
-            <SelectItem value="priority">优先级</SelectItem>
-            <SelectItem value="due_date">截止日期</SelectItem>
-          </SelectContent>
-        </Select>
+          {/* 排序 */}
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-full sm:w-32">
+              <SelectValue placeholder="排序方式" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="created_at">创建时间</SelectItem>
+              <SelectItem value="priority">优先级</SelectItem>
+              <SelectItem value="due_date">截止日期</SelectItem>
+            </SelectContent>
+          </Select>
 
-        {/* 排序方向 */}
-        <Select value={sortOrder} onValueChange={setSortOrder}>
-          <SelectTrigger className="w-28">
-            <SelectValue placeholder="排序方向" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="desc">降序</SelectItem>
-            <SelectItem value="asc">升序</SelectItem>
-          </SelectContent>
-        </Select>
+          {/* 排序方向 */}
+          <Select value={sortOrder} onValueChange={setSortOrder}>
+            <SelectTrigger className="w-full sm:w-28">
+              <SelectValue placeholder="排序方向" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="desc">降序</SelectItem>
+              <SelectItem value="asc">升序</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* 任务列表 */}
