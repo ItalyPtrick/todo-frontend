@@ -62,7 +62,7 @@ export function LoginPage() {
 
   return (
     <motion.div
-      className="w-full max-w-[480px] px-4 sm:px-0"
+      className="w-full sm:w-[480px] px-4 sm:px-0"
       variants={fadeUp}
       initial="initial"
       animate="animate"
