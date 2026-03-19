@@ -15,7 +15,6 @@ interface TodoItemProps {
   onEdit: (todo: Todo) => void;
   onUpdateStatus: (todoId: string, completed: boolean) => void;
   onDelete: (todoId: string) => void;
-  onRefresh: () => void;
 }
 
 export function TodoItem({ todo, onEdit, onUpdateStatus, onDelete }: TodoItemProps) {

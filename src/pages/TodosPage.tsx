@@ -24,7 +24,7 @@ import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { TodoList } from '../features/todos/components/TodoList';
 import { TodoStats } from '../features/todos/components/TodoStats';
-import { createTodo, updateTodo, getTodos } from '../features/todos/api';
+import { createTodo, updateTodo, getTodos, deleteTodo } from '../features/todos/api';
 import type { Todo, CreateTodoInput, UpdateTodoInput } from '../features/todos/types';
 
 interface Stats {
@@ -170,7 +170,6 @@ export function TodosPage() {
   const handleDeleteTodo = async (todoId: string) => {
     setTodos(prev => prev.filter(t => t.id !== todoId));
     try {
-      const { deleteTodo } = await import('../features/todos/api');
       await deleteTodo(todoId);
       toast.success('任务已删除');
     } catch (error) {
@@ -261,10 +260,6 @@ export function TodosPage() {
         onUpdateStatus={handleUpdateTodoStatus}
         onDelete={handleDeleteTodo}
         onRefresh={handleRefresh}
-        search={debouncedSearch}
-        priority={filterPriority}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
       />
 
       {/* 新建/编辑 Sheet */}

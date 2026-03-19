@@ -10,10 +10,6 @@ interface TodoListProps {
   onUpdateStatus: (todoId: string, completed: boolean) => void;
   onDelete: (todoId: string) => void;
   onRefresh: () => void;
-  search?: string;
-  priority?: string;
-  sortBy?: string;
-  sortOrder?: string;
 }
 
 export function TodoList({
@@ -83,7 +79,6 @@ export function TodoList({
               onEdit={onEdit}
               onUpdateStatus={onUpdateStatus}
               onDelete={onDelete}
-              onRefresh={onRefresh}
             />
           </motion.div>
         ))}
