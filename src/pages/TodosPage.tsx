@@ -47,6 +47,7 @@ export function TodosPage() {
   const [priority, setPriority] = useState('1');
   const [dueDate, setDueDate] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   // 筛选排序状态
   const [searchQuery, setSearchQuery] = useState('');
@@ -299,7 +300,7 @@ export function TodosPage() {
             {/* 截止日期 */}
             <div className="space-y-2">
               <Label>截止日期（可选）</Label>
-              <Popover>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -320,6 +321,7 @@ export function TodosPage() {
                     onSelect={(date) => {
                       setSelectedDate(date);
                       setDueDate(date ? format(date, 'yyyy-MM-dd') : '');
+                      setCalendarOpen(false);
                     }}
                     locale={zhCN}
                     disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
